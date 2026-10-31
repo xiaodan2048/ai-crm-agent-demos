@@ -16,15 +16,15 @@
 
 **A 线 · 用户画像卡**
 
-![用户画像卡](prototype/A-用户画像卡.svg)
+![用户画像卡](prototype/A-用户画像卡.png)
 
 **B 线 · 复盘结果页**
 
-![复盘结果页](prototype/B-复盘结果页.svg)
+![复盘结果页](prototype/B-复盘结果页.png)
 
 **C 线 · 主管周报**
 
-![主管周报](prototype/C-主管周报.svg)
+![主管周报](prototype/C-主管周报.png)
 
 原型源文件：[`prototype/index.html`](prototype/index.html)，下载后用浏览器打开即可。
 
