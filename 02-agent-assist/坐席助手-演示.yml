@@ -1,0 +1,337 @@
+app:
+  name: 坐席助手-演示
+  mode: advanced-chat
+  description: 售后坐席 AI 助手演示：根据顾客消息推荐回复话术并标注依据条款，输入 /小结 生成工单小结。虚构品牌与数据。
+  icon: 🎧
+  icon_background: '#FFEAD5'
+  use_icon_as_answer_icon: false
+dependencies: []
+kind: app
+version: 0.3.1
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      enabled: false
+    opening_statement: （演示说明：把顾客发来的消息粘贴进来，助手会推荐回复；会话结束时输入 /小结 生成工单小结。）
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    nodes:
+    - data:
+        type: start
+        title: 开始：顾客信息
+        variables:
+        - variable: member_level
+          label: 会员等级
+          type: select
+          required: true
+          max_length: 48
+          options:
+          - 普通用户
+          - 超级会员
+        - variable: order_status
+          label: 订单状态（如：下单5天，已签收）
+          type: text-input
+          required: true
+          max_length: 100
+          options: []
+        desc: ''
+        selected: false
+      id: start
+      position:
+        x: 30
+        y: 280
+      positionAbsolute:
+        x: 30
+        y: 280
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+      height: 98
+    - data:
+        type: if-else
+        title: 是否生成小结
+        cases:
+        - case_id: 'true'
+          id: 'true'
+          logical_operator: and
+          conditions:
+          - id: cond-1
+            comparison_operator: contains
+            value: /小结
+            varType: string
+            variable_selector:
+            - sys
+            - query
+        desc: ''
+        selected: false
+      id: ifelse
+      position:
+        x: 330
+        y: 280
+      positionAbsolute:
+        x: 330
+        y: 280
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+      height: 98
+    - data:
+        type: llm
+        title: 工单小结
+        model:
+          provider: ''
+          name: ''
+          mode: chat
+          completion_params:
+            temperature: 0.1
+        prompt_template:
+        - role: system
+          text: '你是售后工单小结助手。坐席已结束本次会话，请根据前面完整的对话记录，生成工单小结，供坐席确认后回写。只输出小结，不输出其他内容。
+
+
+            一通会话有多个问题时，每个问题输出一组。
+
+
+            输出格式：
+
+            问题类型：退换货 / 运费 / 价保 / 物流 / 其他
+
+            问题描述：一句话
+
+            处理结果：已解决 / 待跟进 / 已升级，并用一句话说明（如"已提交退差价申请"）
+
+            是否需回访：是 / 否（是的话写回访原因）
+
+            是否升级投诉：是 / 否'
+        context:
+          enabled: false
+          variable_selector: []
+        variables: []
+        vision:
+          enabled: false
+        memory:
+          query_prompt_template: '{{#sys.query#}}'
+          window:
+            enabled: true
+            size: 30
+        desc: ''
+        selected: false
+      id: llm_ticket
+      position:
+        x: 630
+        y: 140
+      positionAbsolute:
+        x: 630
+        y: 140
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+      height: 98
+    - data:
+        type: answer
+        title: 回复：工单小结
+        answer: '工单小结（请坐席确认后回写）
+
+          {{#llm_ticket.text#}}'
+        variables: []
+        desc: ''
+        selected: false
+      id: answer_ticket
+      position:
+        x: 930
+        y: 140
+      positionAbsolute:
+        x: 930
+        y: 140
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+      height: 98
+    - data:
+        type: knowledge-retrieval
+        title: 知识检索：售后政策
+        query_variable_selector:
+        - sys
+        - query
+        dataset_ids: []
+        retrieval_mode: multiple
+        multiple_retrieval_config:
+          top_k: 4
+          reranking_enable: false
+        desc: ''
+        selected: false
+      id: kr
+      position:
+        x: 630
+        y: 420
+      positionAbsolute:
+        x: 630
+        y: 420
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+      height: 98
+    - data:
+        type: llm
+        title: 话术推荐
+        model:
+          provider: ''
+          name: ''
+          mode: chat
+          completion_params:
+            temperature: 0.3
+        prompt_template:
+        - role: system
+          text: '你是"示例特卖"售后坐席的 AI 助手。坐席把顾客的消息发给你，你给坐席推荐回复。你不直接面对顾客，最终由坐席决定是否发送。
+
+
+            顾客信息：会员等级 {{#start.member_level#}}；当前订单状态：{{#start.order_status#}}
+
+
+            要求：
+
+            1. 只依据参考政策回答，推荐回复必须能在参考政策里找到依据，并写出条款编号。
+
+            2. 参考政策里找不到依据、或需要查询系统才能确定的，写"需人工确认"，并说明要确认什么。
+
+            3. 不推荐任何政策以外的补偿、赠券或时效承诺（见 FW-01）。
+
+            4. 顾客一句话里有多个问题时，按问题分条输出。
+
+            5. 推荐回复用客服口吻，简短、礼貌，不超过 80 字。
+
+            6. 顾客要求投诉或情绪激动时，在注意事项里提示"建议升级投诉工单（FW-02）"。
+
+
+            输出格式（每个问题一组）：
+
+            问题类型：退换货 / 运费 / 价保 / 物流 / 其他
+
+            推荐回复：……
+
+            依据条款：编号（如 JB-02）
+
+            注意事项：需人工确认的点或风险提示，没有就写"无"
+
+
+            参考政策：
+
+            {{#context#}}'
+        context:
+          enabled: true
+          variable_selector:
+          - kr
+          - result
+        variables: []
+        vision:
+          enabled: false
+        memory:
+          query_prompt_template: '{{#sys.query#}}'
+          window:
+            enabled: true
+            size: 30
+        desc: ''
+        selected: false
+      id: llm_assist
+      position:
+        x: 930
+        y: 420
+      positionAbsolute:
+        x: 930
+        y: 420
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+      height: 98
+    - data:
+        type: answer
+        title: 回复：推荐话术
+        answer: '{{#llm_assist.text#}}'
+        variables: []
+        desc: ''
+        selected: false
+      id: answer_assist
+      position:
+        x: 1230
+        y: 420
+      positionAbsolute:
+        x: 1230
+        y: 420
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+      height: 98
+    edges:
+    - id: start-source-ifelse
+      source: start
+      sourceHandle: source
+      target: ifelse
+      targetHandle: target
+      type: custom
+      data:
+        isInIteration: false
+    - id: ifelse-true-llm_ticket
+      source: ifelse
+      sourceHandle: 'true'
+      target: llm_ticket
+      targetHandle: target
+      type: custom
+      data:
+        isInIteration: false
+    - id: llm_ticket-source-answer_ticket
+      source: llm_ticket
+      sourceHandle: source
+      target: answer_ticket
+      targetHandle: target
+      type: custom
+      data:
+        isInIteration: false
+    - id: ifelse-false-kr
+      source: ifelse
+      sourceHandle: 'false'
+      target: kr
+      targetHandle: target
+      type: custom
+      data:
+        isInIteration: false
+    - id: kr-source-llm_assist
+      source: kr
+      sourceHandle: source
+      target: llm_assist
+      targetHandle: target
+      type: custom
+      data:
+        isInIteration: false
+    - id: llm_assist-source-answer_assist
+      source: llm_assist
+      sourceHandle: source
+      target: answer_assist
+      targetHandle: target
+      type: custom
+      data:
+        isInIteration: false
+    viewport:
+      x: 0
+      y: 0
+      zoom: 0.8

@@ -1,0 +1,380 @@
+app:
+  name: 外呼Agent-演示
+  mode: advanced-chat
+  description: 超级会员续费召回外呼演示：AI 扮演会员服务专员对话，通话结束自动输出续费意向、不续原因等 CRM 标签。虚构品牌与数据。
+  icon: 📞
+  icon_background: '#FFEAD5'
+  use_icon_as_answer_icon: false
+dependencies: []
+kind: app
+version: 0.3.1
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      enabled: false
+    opening_statement: （演示说明：你扮演接电话的会员，先说一句"喂，你好"开始。）
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    nodes:
+    - data:
+        type: start
+        title: 开始：会员信息
+        variables:
+        - variable: member_name
+          label: 用户称呼
+          type: text-input
+          required: true
+          max_length: 48
+          options: []
+        - variable: member_level
+          label: 会员等级
+          type: select
+          required: true
+          max_length: 48
+          options:
+          - 超级会员年卡
+          - 超级会员季卡
+          - 已过期超级会员
+        - variable: expire_date
+          label: 到期日期（如 11月15日）
+          type: text-input
+          required: true
+          max_length: 48
+          options: []
+        - variable: orders_90d
+          label: 近90天订单数
+          type: text-input
+          required: true
+          max_length: 48
+          options: []
+        - variable: fav_category
+          label: 偏好品类
+          type: text-input
+          required: true
+          max_length: 48
+          options: []
+        desc: ''
+        selected: false
+      id: start
+      position:
+        x: 30
+        y: 280
+      positionAbsolute:
+        x: 30
+        y: 280
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+      height: 98
+    - data:
+        type: knowledge-retrieval
+        title: 知识检索：会员知识
+        query_variable_selector:
+        - sys
+        - query
+        dataset_ids: []
+        retrieval_mode: multiple
+        multiple_retrieval_config:
+          top_k: 4
+          reranking_enable: false
+        desc: ''
+        selected: false
+      id: kr
+      position:
+        x: 330
+        y: 280
+      positionAbsolute:
+        x: 330
+        y: 280
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+      height: 98
+    - data:
+        type: llm
+        title: 外呼对话
+        model:
+          provider: ''
+          name: ''
+          mode: chat
+          completion_params:
+            temperature: 0.7
+        prompt_template:
+        - role: system
+          text: '你是"示例特卖"的会员服务专员，正在给超级会员即将到期的用户打电话。
+
+            用户信息：{{#start.member_name#}}，会员等级 {{#start.member_level#}}，{{#start.expire_date#}} 到期，近 90 天下单 {{#start.orders_90d#}} 次，常买 {{#start.fav_category#}}。
+
+
+            目标：提醒到期，结合用户常买的品类讲清续费能省什么，了解是否续费；不续的话问清原因。
+
+
+            规则：
+
+            1. 每次只说 1-2 句话，像真人打电话，不要一口气念权益，不要用列表和表情符号。
+
+            2. 权益、价格和活动只能用参考资料里的内容；参考资料里没有的，说"这个我帮您确认后短信告诉您"。
+
+            3. 不承诺参考资料以外的折扣、赠品或补偿；用户反复要优惠时，礼貌说明能给的就是这些。
+
+            4. 用户提到退款、投诉、物流、商品质量问题时，说明会转给售后客服专人处理，然后结束。
+
+            5. 用户明确拒绝或要求不再来电时，道歉并礼貌结束。
+
+            6. 用户明确拒绝续费时，只问一次原因，不反复劝说。
+
+            7. 用户同意续费时，告诉他会发送续费链接（72 小时有效）。
+
+            8. 用户同意续费、拒绝、要求稍后联系、需要转人工或要求勿扰时，说完最后一句话后，在末尾单独输出"【通话结束】"。其他情况不要输出这个标记。
+
+
+            异议处理参考：
+
+            - 嫌贵：用用户近 90 天的下单次数和常买品类，算一算免运费和专享折扣大概能省多少，不编造具体金额以外的优惠。
+
+            - 用得少：提一下每月品类券和大促提前购，问问最近是否有购物计划。
+
+            - 没时间：问方便的时间，然后结束。
+
+
+            参考资料：
+
+            {{#context#}}'
+        context:
+          enabled: true
+          variable_selector:
+          - kr
+          - result
+        variables: []
+        vision:
+          enabled: false
+        memory:
+          query_prompt_template: '{{#sys.query#}}'
+          window:
+            enabled: true
+            size: 30
+        desc: ''
+        selected: false
+      id: llm_dialog
+      position:
+        x: 630
+        y: 280
+      positionAbsolute:
+        x: 630
+        y: 280
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+      height: 98
+    - data:
+        type: if-else
+        title: 是否通话结束
+        cases:
+        - case_id: 'true'
+          id: 'true'
+          logical_operator: and
+          conditions:
+          - id: cond-1
+            comparison_operator: contains
+            value: 【通话结束】
+            varType: string
+            variable_selector:
+            - llm_dialog
+            - text
+        desc: ''
+        selected: false
+      id: ifelse
+      position:
+        x: 930
+        y: 280
+      positionAbsolute:
+        x: 930
+        y: 280
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+      height: 98
+    - data:
+        type: llm
+        title: 通话小结
+        model:
+          provider: ''
+          name: ''
+          mode: chat
+          completion_params:
+            temperature: 0.1
+        prompt_template:
+        - role: system
+          text: '你是外呼质检助手。根据整段通话，按固定格式输出通话小结，用于回写会员 CRM。不要输出其他内容。
+
+
+            用户信息：{{#start.member_name#}}，{{#start.member_level#}}，常买 {{#start.fav_category#}}
+
+            专员本轮最后一句：{{#llm_dialog.text#}}
+
+
+            判断标准：
+
+            - 已同意：用户明确说"续""好的发我链接"等
+
+            - 有意向未决定：用户没有拒绝，但说"再看看""考虑一下""到时候再说"
+
+            - 不续费：用户明确说不续
+
+            - 未有效沟通：没聊到续费就结束了（如转人工、勿扰、非本人）
+
+
+            输出格式：
+
+            续费意向：已同意 / 有意向未决定 / 不续费 / 未有效沟通（四选一）
+
+            不续原因：价格 / 用得少 / 权益不感兴趣 / 体验问题 / 其他 / 无（只选一个，没有就写"无"）
+
+            偏好品类：对话中用户提到的品类，最多 3 个，没有就写用户信息里的常买品类
+
+            是否勿扰：是 / 否
+
+            是否转人工：是 / 否（是的话括号写原因，如退款、投诉、物流）
+
+            下一步动作：一句话。已同意 → "发送续费链接"；有意向未决定 → "24 小时内推送续费链接"；不续费 → "30 天后进入沉睡召回名单"；勿扰 → "90 天内不再外呼"；转人工 → "转售后客服跟进"'
+        context:
+          enabled: false
+          variable_selector: []
+        variables: []
+        vision:
+          enabled: false
+        memory:
+          query_prompt_template: '{{#sys.query#}}'
+          window:
+            enabled: true
+            size: 30
+        desc: ''
+        selected: false
+      id: llm_summary
+      position:
+        x: 1230
+        y: 180
+      positionAbsolute:
+        x: 1230
+        y: 180
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+      height: 98
+    - data:
+        type: answer
+        title: 回复：结束语+小结
+        answer: '{{#llm_dialog.text#}}
+
+
+          ——————
+
+          通话小结（回写 CRM）
+
+          {{#llm_summary.text#}}'
+        variables: []
+        desc: ''
+        selected: false
+      id: answer_end
+      position:
+        x: 1530
+        y: 180
+      positionAbsolute:
+        x: 1530
+        y: 180
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+      height: 98
+    - data:
+        type: answer
+        title: 回复：继续对话
+        answer: '{{#llm_dialog.text#}}'
+        variables: []
+        desc: ''
+        selected: false
+      id: answer_reply
+      position:
+        x: 1230
+        y: 400
+      positionAbsolute:
+        x: 1230
+        y: 400
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+      height: 98
+    edges:
+    - id: start-source-kr
+      source: start
+      sourceHandle: source
+      target: kr
+      targetHandle: target
+      type: custom
+      data:
+        isInIteration: false
+    - id: kr-source-llm_dialog
+      source: kr
+      sourceHandle: source
+      target: llm_dialog
+      targetHandle: target
+      type: custom
+      data:
+        isInIteration: false
+    - id: llm_dialog-source-ifelse
+      source: llm_dialog
+      sourceHandle: source
+      target: ifelse
+      targetHandle: target
+      type: custom
+      data:
+        isInIteration: false
+    - id: ifelse-true-llm_summary
+      source: ifelse
+      sourceHandle: 'true'
+      target: llm_summary
+      targetHandle: target
+      type: custom
+      data:
+        isInIteration: false
+    - id: llm_summary-source-answer_end
+      source: llm_summary
+      sourceHandle: source
+      target: answer_end
+      targetHandle: target
+      type: custom
+      data:
+        isInIteration: false
+    - id: ifelse-false-answer_reply
+      source: ifelse
+      sourceHandle: 'false'
+      target: answer_reply
+      targetHandle: target
+      type: custom
+      data:
+        isInIteration: false
+    viewport:
+      x: 0
+      y: 0
+      zoom: 0.8

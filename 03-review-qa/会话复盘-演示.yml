@@ -1,0 +1,183 @@
+app:
+  name: 会话复盘-演示
+  mode: workflow
+  description: 客服会话复盘与质检初筛演示：输入一通完整会话，输出原因标签、是否解决、风险提示（引用原句）和是否需人工复核。虚构数据。
+  icon: 🔍
+  icon_background: '#FFEAD5'
+  use_icon_as_answer_icon: false
+dependencies: []
+kind: app
+version: 0.3.1
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      enabled: false
+    opening_statement: ''
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    nodes:
+    - data:
+        type: start
+        title: 开始：会话记录
+        variables:
+        - variable: agent_name
+          label: 坐席名称或工号
+          type: text-input
+          required: true
+          max_length: 48
+          options: []
+        - variable: transcript
+          label: 完整会话记录
+          type: paragraph
+          required: true
+          max_length: 20000
+          options: []
+        desc: ''
+        selected: false
+      id: start
+      position:
+        x: 30
+        y: 280
+      positionAbsolute:
+        x: 30
+        y: 280
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+      height: 98
+    - data:
+        type: llm
+        title: 会话复盘与质检
+        model:
+          provider: ''
+          name: ''
+          mode: chat
+          completion_params:
+            temperature: 0.1
+        prompt_template:
+        - role: system
+          text: '你是客服质检助手。阅读一通完整的客服会话，输出结构化复盘结果。只输出结果，不输出其他内容。
+
+
+            原因标签只能从以下选一个：退换货 / 运费 / 价保 / 物流 / 商品质量 / 会员权益 / 其他
+
+            是否解决只能选一个：已解决 / 未解决 / 已升级
+
+            风险类型可多选或写"无"：违规承诺 / 服务态度 / 未按流程核实 / 投诉倾向
+
+
+            检查规则：
+
+            1. 风险提示必须引用会话中的原句，用引号标出；没有原句依据的不要写。
+
+            2. 违规承诺：坐席承诺了政策外的补偿、赠券、时效，例如"给您补 50 元券""明天一定到"。
+
+            3. 服务态度：推诿、反问、指责顾客，例如"这不是我们的问题"。
+
+            4. 未按流程核实：没核实订单或问题情况就下结论。
+
+            5. 投诉倾向：顾客说"投诉""差评""12315"等。
+
+            6. 坐席照念政策原文、语气平淡，不算服务态度问题。
+
+            7. 有任何风险，或"是否解决"不是"已解决"，则"是否需人工复核"为"是"。
+
+
+            输出格式：
+
+            坐席：{{#start.agent_name#}}
+
+            原因标签：
+
+            是否解决：
+
+            一句话复盘：
+
+            风险类型：
+
+            风险提示：
+
+            是否需人工复核：是 / 否（是的话写原因）'
+        - role: user
+          text: '会话记录：
+
+            {{#start.transcript#}}'
+        context:
+          enabled: false
+          variable_selector: []
+        variables: []
+        vision:
+          enabled: false
+        desc: ''
+        selected: false
+      id: llm_review
+      position:
+        x: 330
+        y: 280
+      positionAbsolute:
+        x: 330
+        y: 280
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+      height: 98
+    - data:
+        type: end
+        title: 结束
+        outputs:
+        - variable: review
+          value_selector:
+          - llm_review
+          - text
+          value_type: string
+        desc: ''
+        selected: false
+      id: end
+      position:
+        x: 630
+        y: 280
+      positionAbsolute:
+        x: 630
+        y: 280
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+      height: 98
+    edges:
+    - id: start-source-llm_review
+      source: start
+      sourceHandle: source
+      target: llm_review
+      targetHandle: target
+      type: custom
+      data:
+        isInIteration: false
+    - id: llm_review-source-end
+      source: llm_review
+      sourceHandle: source
+      target: end
+      targetHandle: target
+      type: custom
+      data:
+        isInIteration: false
+    viewport:
+      x: 0
+      y: 0
+      zoom: 0.8

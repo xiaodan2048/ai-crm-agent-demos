@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1150" height="502" viewBox="0 0 1150 502"><foreignObject x="0" y="0" width="1150" height="502"><div xmlns="http://www.w3.org/1999/xhtml" class="root" style="width:1150px;background:#f4f2ee"><style>
+  :root {
+    --bg: #f4f2ee; --panel: #ffffff; --ink: #1f2328; --muted: #6b6f76; --line: #e4e1db;
+    --accent: #c2410c; --accent-soft: #fdf0e8; --ok: #2f7d4f; --ok-soft: #e8f4ec;
+    --warn: #b45309; --warn-soft: #fdf3e2; --risk: #b42318; --risk-soft: #fdecea; --info-soft: #eef2f7;
+  }
+  * { box-sizing: border-box; }
+  .root { margin: 0; background: var(--bg); color: var(--ink);
+    font-family: "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; font-size: 14px; line-height: 1.55; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 32px 16px 48px; }
+  header.top h1 { font-size: 22px; margin: 0 0 4px; }
+  header.top p { margin: 0 0 24px; color: var(--muted); }
+  .screen { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; margin-bottom: 28px; overflow: hidden; }
+  .screen-bar { display: flex; align-items: center; gap: 10px; padding: 12px 18px; border-bottom: 1px solid var(--line); background: #faf9f7; }
+  .tag-line { font-size: 12px; font-weight: 600; color: var(--accent); background: var(--accent-soft); padding: 2px 8px; border-radius: 4px; }
+  .screen-bar h2 { font-size: 15px; margin: 0; }
+  .screen-bar .who { margin-left: auto; color: var(--muted); font-size: 12px; }
+  .body { padding: 20px; }
+  .grid2 { display: grid; grid-template-columns: 1.35fr 1fr; gap: 20px; }
+  .grid3 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  @media (max-width: 1px) { .grid2, .grid3 { grid-template-columns: 1fr; } }
+  .chat { border: 1px solid var(--line); border-radius: 10px; padding: 14px; background: #fcfbfa; min-height: 260px; }
+  .msg { max-width: 82%; padding: 8px 12px; border-radius: 10px; margin-bottom: 10px; }
+  .msg.c { background: #fff; border: 1px solid var(--line); }
+  .msg.a { background: var(--info-soft); margin-left: auto; }
+  .msg .who { display: block; font-size: 11px; color: var(--muted); margin-bottom: 2px; }
+  .card { border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+  .card h3 { font-size: 14px; margin: 0 0 12px; display: flex; align-items: center; gap: 8px; }
+  .row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed var(--line); }
+  .row:last-child { border-bottom: 0; }
+  .row span:first-child { color: var(--muted); }
+  .pill { display: inline-block; font-size: 12px; padding: 1px 8px; border-radius: 999px; }
+  .pill.ok { background: var(--ok-soft); color: var(--ok); }
+  .pill.warn { background: var(--warn-soft); color: var(--warn); }
+  .pill.risk { background: var(--risk-soft); color: var(--risk); }
+  .pill.gray { background: var(--info-soft); color: #44546a; }
+  .hint { margin-top: 12px; padding: 10px 12px; border-radius: 8px; background: var(--warn-soft); color: #7a3e06; font-size: 13px; }
+  .hint b { display: block; margin-bottom: 2px; }
+  .quote { border-left: 3px solid var(--risk); background: var(--risk-soft); padding: 8px 12px; border-radius: 0 6px 6px 0; margin: 8px 0; }
+  .btns { display: flex; gap: 8px; margin-top: 14px; }
+  .btn { border: 1px solid var(--line); background: #fff; padding: 6px 14px; border-radius: 6px; font-size: 13px; }
+  .btn.primary { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .kpi { border: 1px solid var(--line); border-radius: 10px; padding: 14px; }
+  .kpi .n { font-size: 26px; font-weight: 700; }
+  .kpi .l { color: var(--muted); font-size: 12px; }
+  .bar { display: grid; grid-template-columns: 76px 1fr 32px; align-items: center; gap: 10px; margin: 8px 0; }
+  .bar .track { height: 10px; background: #efede9; border-radius: 5px; overflow: hidden; }
+  .bar .fill { height: 100%; background: var(--accent); border-radius: 5px; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--line); font-size: 13px; }
+  th { color: var(--muted); font-weight: 500; }
+  th:nth-child(-n+3), td:nth-child(-n+2) { white-space: nowrap; }
+  .note { color: var(--muted); font-size: 12px; margin-top: 10px; }
+ .screen{margin:0}</style><section class="screen" id="screen-a">
+    <div class="screen-bar"><span class="tag-line">A 线</span><h2>接待前准备 · 用户画像卡</h2><span class="who">使用者：坐席 · 用户接入时自动弹出</span></div>
+    <div class="body grid2">
+      <div class="chat">
+        <div class="msg c"><span class="who">顾客 · 王女士</span>你好，我想问下退货的事</div>
+        <div class="msg a"><span class="who">坐席 · 小林</span>您好王女士，请问是哪一笔订单呢？</div>
+      </div>
+      <div class="card">
+        <h3>用户画像卡 <span class="pill gray">AI 生成</span></h3>
+        <div class="row"><span>会员等级</span><span>超级会员年卡 · 11月15日到期</span></div>
+        <div class="row"><span>近 30 天订单</span><span>3 笔 · 1 笔退货中</span></div>
+        <div class="row"><span>历史咨询</span><span>近 90 天 2 次（物流 1、价保 1）</span></div>
+        <div class="row"><span>上次外呼小结</span><span><span class="pill warn">有意向未决定</span></span></div>
+        <div class="row"><span>偏好品类</span><span>童装、家居</span></div>
+        <div class="hint"><b>可能的诉求</b>退货中的童装订单（退货已签收 2 天），大概率询问退款进度。</div>
+        <div class="hint" style="background:var(--risk-soft);color:#7a1d14"><b>情绪注意点</b>上次物流咨询等待超过 24 小时才回复，开场先确认进度，避免让用户重复描述。</div>
+      </div>
+    </div>
+  </section></div></foreignObject></svg>

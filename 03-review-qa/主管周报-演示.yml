@@ -1,0 +1,158 @@
+app:
+  name: 主管周报-演示
+  mode: workflow
+  description: 客服主管周报演示：把一周的会话复盘结果汇总成问题排行、风险会话和坐席辅导建议。虚构数据。
+  icon: 📊
+  icon_background: '#FFEAD5'
+  use_icon_as_answer_icon: false
+dependencies: []
+kind: app
+version: 0.3.1
+workflow:
+  conversation_variables: []
+  environment_variables: []
+  features:
+    file_upload:
+      enabled: false
+    opening_statement: ''
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    nodes:
+    - data:
+        type: start
+        title: 开始：本周复盘结果
+        variables:
+        - variable: reviews
+          label: 本周复盘结果（多条，可直接粘贴复盘演示的输出）
+          type: paragraph
+          required: true
+          max_length: 50000
+          options: []
+        desc: ''
+        selected: false
+      id: start
+      position:
+        x: 30
+        y: 280
+      positionAbsolute:
+        x: 30
+        y: 280
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+      height: 98
+    - data:
+        type: llm
+        title: 生成主管周报
+        model:
+          provider: ''
+          name: ''
+          mode: chat
+          completion_params:
+            temperature: 0.2
+        prompt_template:
+        - role: system
+          text: '你是客服主管的周报助手。输入是本周多条会话复盘结果（每条包含坐席、原因标签、是否解决、风险类型等）。请汇总成一份周报。
+
+
+            要求：
+
+            1. 数字必须从输入中数出来，不要估算；数不清的写"数据不足"。
+
+            2. 只根据输入内容下结论，不编造输入里没有的坐席或问题。
+
+            3. 用简洁的中文，适合主管 3 分钟读完。
+
+
+            输出结构：
+
+            一、本周概况：复盘会话总数、已解决 / 未解决 / 已升级各多少条
+
+            二、问题类型排行：按原因标签从多到少列出条数
+
+            三、风险会话：列出有风险的会话（坐席 + 风险类型 + 一句话），按严重程度排序（投诉倾向 > 违规承诺 > 服务态度 > 未按流程核实）
+
+            四、需要辅导的坐席：风险或未解决次数最多的坐席，各写一条具体辅导建议
+
+            五、给其他部门的反馈：如果某类问题集中（如某品类质量问题、物流延迟），写给商品或物流部门的一句话建议'
+        - role: user
+          text: '本周复盘结果：
+
+            {{#start.reviews#}}'
+        context:
+          enabled: false
+          variable_selector: []
+        variables: []
+        vision:
+          enabled: false
+        desc: ''
+        selected: false
+      id: llm_weekly
+      position:
+        x: 330
+        y: 280
+      positionAbsolute:
+        x: 330
+        y: 280
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+      height: 98
+    - data:
+        type: end
+        title: 结束
+        outputs:
+        - variable: weekly_report
+          value_selector:
+          - llm_weekly
+          - text
+          value_type: string
+        desc: ''
+        selected: false
+      id: end
+      position:
+        x: 630
+        y: 280
+      positionAbsolute:
+        x: 630
+        y: 280
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+      height: 98
+    edges:
+    - id: start-source-llm_weekly
+      source: start
+      sourceHandle: source
+      target: llm_weekly
+      targetHandle: target
+      type: custom
+      data:
+        isInIteration: false
+    - id: llm_weekly-source-end
+      source: llm_weekly
+      sourceHandle: source
+      target: end
+      targetHandle: target
+      type: custom
+      data:
+        isInIteration: false
+    viewport:
+      x: 0
+      y: 0
+      zoom: 0.8

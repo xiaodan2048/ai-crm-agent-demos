@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1150" height="472" viewBox="0 0 1150 472"><foreignObject x="0" y="0" width="1150" height="472"><div xmlns="http://www.w3.org/1999/xhtml" class="root" style="width:1150px;background:#f4f2ee"><style>
+  :root {
+    --bg: #f4f2ee; --panel: #ffffff; --ink: #1f2328; --muted: #6b6f76; --line: #e4e1db;
+    --accent: #c2410c; --accent-soft: #fdf0e8; --ok: #2f7d4f; --ok-soft: #e8f4ec;
+    --warn: #b45309; --warn-soft: #fdf3e2; --risk: #b42318; --risk-soft: #fdecea; --info-soft: #eef2f7;
+  }
+  * { box-sizing: border-box; }
+  .root { margin: 0; background: var(--bg); color: var(--ink);
+    font-family: "PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", sans-serif; font-size: 14px; line-height: 1.55; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 32px 16px 48px; }
+  header.top h1 { font-size: 22px; margin: 0 0 4px; }
+  header.top p { margin: 0 0 24px; color: var(--muted); }
+  .screen { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; margin-bottom: 28px; overflow: hidden; }
+  .screen-bar { display: flex; align-items: center; gap: 10px; padding: 12px 18px; border-bottom: 1px solid var(--line); background: #faf9f7; }
+  .tag-line { font-size: 12px; font-weight: 600; color: var(--accent); background: var(--accent-soft); padding: 2px 8px; border-radius: 4px; }
+  .screen-bar h2 { font-size: 15px; margin: 0; }
+  .screen-bar .who { margin-left: auto; color: var(--muted); font-size: 12px; }
+  .body { padding: 20px; }
+  .grid2 { display: grid; grid-template-columns: 1.35fr 1fr; gap: 20px; }
+  .grid3 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  @media (max-width: 1px) { .grid2, .grid3 { grid-template-columns: 1fr; } }
+  .chat { border: 1px solid var(--line); border-radius: 10px; padding: 14px; background: #fcfbfa; min-height: 260px; }
+  .msg { max-width: 82%; padding: 8px 12px; border-radius: 10px; margin-bottom: 10px; }
+  .msg.c { background: #fff; border: 1px solid var(--line); }
+  .msg.a { background: var(--info-soft); margin-left: auto; }
+  .msg .who { display: block; font-size: 11px; color: var(--muted); margin-bottom: 2px; }
+  .card { border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+  .card h3 { font-size: 14px; margin: 0 0 12px; display: flex; align-items: center; gap: 8px; }
+  .row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dashed var(--line); }
+  .row:last-child { border-bottom: 0; }
+  .row span:first-child { color: var(--muted); }
+  .pill { display: inline-block; font-size: 12px; padding: 1px 8px; border-radius: 999px; }
+  .pill.ok { background: var(--ok-soft); color: var(--ok); }
+  .pill.warn { background: var(--warn-soft); color: var(--warn); }
+  .pill.risk { background: var(--risk-soft); color: var(--risk); }
+  .pill.gray { background: var(--info-soft); color: #44546a; }
+  .hint { margin-top: 12px; padding: 10px 12px; border-radius: 8px; background: var(--warn-soft); color: #7a3e06; font-size: 13px; }
+  .hint b { display: block; margin-bottom: 2px; }
+  .quote { border-left: 3px solid var(--risk); background: var(--risk-soft); padding: 8px 12px; border-radius: 0 6px 6px 0; margin: 8px 0; }
+  .btns { display: flex; gap: 8px; margin-top: 14px; }
+  .btn { border: 1px solid var(--line); background: #fff; padding: 6px 14px; border-radius: 6px; font-size: 13px; }
+  .btn.primary { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .kpi { border: 1px solid var(--line); border-radius: 10px; padding: 14px; }
+  .kpi .n { font-size: 26px; font-weight: 700; }
+  .kpi .l { color: var(--muted); font-size: 12px; }
+  .bar { display: grid; grid-template-columns: 76px 1fr 32px; align-items: center; gap: 10px; margin: 8px 0; }
+  .bar .track { height: 10px; background: #efede9; border-radius: 5px; overflow: hidden; }
+  .bar .fill { height: 100%; background: var(--accent); border-radius: 5px; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--line); font-size: 13px; }
+  th { color: var(--muted); font-weight: 500; }
+  th:nth-child(-n+3), td:nth-child(-n+2) { white-space: nowrap; }
+  .note { color: var(--muted); font-size: 12px; margin-top: 10px; }
+ .screen{margin:0}</style><section class="screen" id="screen-b">
+    <div class="screen-bar"><span class="tag-line">B 线</span><h2>会话后复盘 · 复盘结果页</h2><span class="who">使用者：质检员 · 每通会话结束后自动生成</span></div>
+    <div class="body grid2">
+      <div class="chat">
+        <div class="msg c"><span class="who">顾客</span>衣服洗一次就起球了，我要退货。</div>
+        <div class="msg a"><span class="who">坐席 · 小周</span>亲，这个情况一般是正常的，建议您用洗衣袋。</div>
+        <div class="msg c"><span class="who">顾客</span>那就是不给退？我要投诉。</div>
+        <div class="msg a"><span class="who">坐席 · 小周</span>我帮您申请质量问题退货，运费我们承担，麻烦您上传一下照片。</div>
+      </div>
+      <div class="card">
+        <h3>复盘结果 <span class="pill risk">需人工复核</span></h3>
+        <div class="row"><span>原因标签</span><span>商品质量</span></div>
+        <div class="row"><span>是否解决</span><span><span class="pill ok">已解决</span></span></div>
+        <div class="row"><span>风险类型</span><span><span class="pill risk">未按流程核实</span> <span class="pill risk">投诉倾向</span></span></div>
+        <div style="margin-top:10px;color:var(--muted);font-size:12px">风险依据（引用原句）</div>
+        <div class="quote">"这个情况一般是正常的" —— 未先核实商品问题就下结论</div>
+        <div class="quote">"我要投诉" —— 顾客出现投诉倾向</div>
+        <div class="btns"><span class="btn primary">确认风险</span><span class="btn">AI 判断有误</span><span class="btn">修改标签</span></div>
+        <p class="note">AI 结果只做初筛，质检员确认后才计入质检结果。</p>
+      </div>
+    </div>
+  </section></div></foreignObject></svg>
