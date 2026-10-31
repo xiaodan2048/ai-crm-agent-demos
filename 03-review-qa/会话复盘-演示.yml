@@ -123,6 +123,7 @@ workflow:
         variables: []
         vision:
           enabled: false
+        reasoning_format: separated
         desc: ''
         selected: false
       id: llm_review

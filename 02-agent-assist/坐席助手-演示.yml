@@ -68,7 +68,7 @@ workflow:
         cases:
         - case_id: 'true'
           id: 'true'
-          logical_operator: and
+          logical_operator: or
           conditions:
           - id: cond-1
             comparison_operator: contains
@@ -125,6 +125,7 @@ workflow:
         variables: []
         vision:
           enabled: false
+        reasoning_format: separated
         memory:
           query_prompt_template: '{{#sys.query#}}'
           window:
@@ -244,6 +245,7 @@ workflow:
         variables: []
         vision:
           enabled: false
+        reasoning_format: separated
         memory:
           query_prompt_template: '{{#sys.query#}}'
           window:
